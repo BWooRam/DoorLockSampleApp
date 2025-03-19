@@ -1,0 +1,449 @@
+{
+  "id": "HT Smart Doorlock",
+  "modelName": "HTSD-001",
+  "manufacture": "HT",
+  "uid": "SN0000001",
+  "text": "HT 스마트 도어락",
+  "deviceCategory": "gate",
+  "deviceType": "doorlock",
+  "version": "1.0",
+  "states": [
+    {
+      "id": "battery",
+      "text": "배터리상태",
+      "description": "Battery state of Door Lock",
+      "configuration": {
+        "type": "oneOfRange",
+        "range": {
+          "dataType": "int",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "editable": false
+        }
+      }
+    },
+    {
+      "id": "deadbolt",
+      "text": "도어락 현재 열림 상태",
+      "description": " State of Deadbolt",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["open", "close"],
+          "writable": ["open", "close"]
+        }
+      }
+    },
+    {
+      "id": "sublatch",
+      "text": "문 현재 열림 상태",
+      "description": "State of Sublatch",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["open", "close"],
+          "writable": []
+        }
+      }
+    },
+    {
+      "id": "volumeLevel",
+      "text": "동작음 음량 크기",
+      "description": "Level of volume",
+      "configuration": {
+        "type": "oneOfRange",
+        "range": {
+          "dataType": "int",
+          "min": 0,
+          "max": 6,
+          "step": 1,
+          "editable": false
+        }
+      }
+    },
+    {
+      "id": "lowBatteryStateAlertSetting",
+      "text": "저전압 알림설정",
+      "description": " Setting of LowBattery State Alert",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["on", "off"],
+          "writable": []
+        }
+      }
+    },
+    {
+      "id": "securityAlertSetting",
+      "text": "칩임경보 알림설정",
+      "description": " Setting Of Security Alert ",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["on", "off"],
+          "writable": []
+        }
+      }
+    },
+    {
+      "id": "masterKey",
+      "text": "마스터 키 구성정보",
+      "description": "Master Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 1,
+        "record": [
+          {
+            "id": "address",
+            "text": "키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "min" : 20,
+              "max" : 20,
+              "dataType": "string",
+              "editable": true
+            }
+          },
+          {
+            "id": "password",
+            "text": "키 문자열",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "min" : 10,
+              "max" : 20,
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "pinKey",
+      "text": "일반 키 구성정보",
+      "description": "Ordinary Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 3,
+        "record": [
+          {
+            "id": "address",
+            "text": "키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          },
+          {
+            "id": "password",
+            "text": "키 문자열",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "fingerprintKey",
+      "text": "지문 인식 키 구성정보",
+      "description": "Fingerprint Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 10,
+        "record": [
+          {
+            "id": "address",
+            "text": "키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "faceKey",
+      "text": "얼굴 인식 키 구성정보",
+      "description": "Face Recognition Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 10,
+        "record": [
+          {
+            "id": "address",
+            "text": "키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cardKey",
+      "text": "카드 키 구성정보",
+      "description": "Card Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 10,
+        "record": [
+          {
+            "id": "address",
+            "text": "비밀번호 키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "otpKey",
+      "text": "일회용 비밀번호(키) 구성정보",
+      "description": "OTP(One Time Password) Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 1,
+        "record": [
+          {
+            "id": "address",
+            "text": "비밀번호 키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          },
+          {
+            "id": "password",
+            "text": "비밀번호 문자열",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": true
+            }
+          },
+          {
+            "id": "startTime",
+            "text": "시작일시",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "timestamp",
+              "editable": true
+            }
+          },
+          {
+            "id": "endTime",
+            "text": "종료일시",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "timestamp",
+              "editable": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "periodKey",
+      "text": "기간제 키 구성정보",
+      "description": "Period Key Configuration of Doorlock",
+      "configuration": {
+        "type": "recordSet",
+        "limit": 10,
+        "record": [
+          {
+            "id": "address",
+            "text": "키 등록주소",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": false
+            }
+          },
+          {
+            "id": "nickname",
+            "text": "키 별칭",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "editable": true
+            }
+          },
+          {
+            "id": "password",
+            "text": "키 문자열",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "string",
+              "digitOnly": true,
+              "editable": true
+            }
+          },
+          {
+            "id": "startTime",
+            "text": "시작일시",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "timestamp",
+              "editable": true
+            }
+          },
+          {
+            "id": "endTime",
+            "text": "종료일시",
+            "recordItemConfiguration": {
+              "type": "singleValue",
+              "dataType": "timestamp",
+              "editable": true
+            }
+          },
+          {
+            "id": "dayWeek",
+            "text": "정기 방문자를 위한 특정 요일 출입 허용 값",
+            "limit": 5,
+            "recordItemConfiguration": {
+              "type": "multiOfArray",
+              "dataType": "string",
+              "readable": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+              "writable": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "autoLock",
+      "text": "자동 잠금 설정",
+      "description": "Automatic Lock of Doorlock",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["on", "off"],
+          "writable": ["on", "off"]
+        }
+      }
+    },
+    {
+      "id": "forcedInternalLock",
+      "text": "내부 강제 잠금 설정",
+      "description": "Forced Internal Lock of Doorlock",
+      "configuration": {
+        "type": "oneOfArray",
+        "array": {
+          "dataType": "string",
+          "readable": ["on", "off"],
+          "writable": ["on", "off"]
+        }
+      }
+    }
+  ],
+  "notifications": [
+    {
+      "id": "deadboltStuck"
+    },
+    {
+      "id": "lowBatteryStateAlert"
+    },
+    {
+      "id": "mischiefAlert"
+    },
+    {
+      "id": "breakInAlert"
+    },
+    {
+      "id": "fireAlert"
+    },
+    {
+      "id": "factoryReset"
+    },
+    {
+      "id": "doorAjar"
+    },
+    {
+      "id": "incorrectPassword",
+      "arguments": ["사용자", "키종류"]
+    }
+  ]
+}

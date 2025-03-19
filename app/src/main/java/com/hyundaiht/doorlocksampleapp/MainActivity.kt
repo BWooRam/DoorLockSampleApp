@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.hyundaiht.doorlocksampleapp.biometrics.BiometricsTestActivity
+import com.hyundaiht.doorlocksampleapp.property.PropertyTestActivity
+import com.hyundaiht.doorlocksampleapp.property.PropertyUiTestActivity
 import com.hyundaiht.doorlocksampleapp.push.PushTestActivity
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
 
@@ -38,6 +40,15 @@ class MainActivity : ComponentActivity() {
                                 Intent(
                                     this@MainActivity,
                                     PushTestActivity::class.java
+                                )
+                            )
+                        }
+
+                        TextWithButton("Device Property 테스트 이동") {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    PropertyUiTestActivity::class.java
                                 )
                             )
                         }

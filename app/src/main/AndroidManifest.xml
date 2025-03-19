@@ -33,6 +33,16 @@
             android:name=".push.PushTestActivity"
             android:exported="false"
             android:theme="@style/Theme.DoorLockSampleApp" />
+
+        <activity
+            android:name=".property.PropertyUiTestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DoorLockSampleApp" />
+
+        <activity
+            android:name=".property.PropertyTestActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DoorLockSampleApp" />
     </application>
 
 </manifest>

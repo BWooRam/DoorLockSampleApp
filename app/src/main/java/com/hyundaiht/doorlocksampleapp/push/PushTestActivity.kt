@@ -1,6 +1,5 @@
 package com.hyundaiht.doorlocksampleapp.push
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -16,16 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.google.gson.Gson
-import com.google.gson.stream.JsonReader
+import com.hyundaiht.doorlocksampleapp.JsonFileUtil
 import com.hyundaiht.doorlocksampleapp.TextWithButton
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.StringReader
 
 class PushTestActivity : FragmentActivity() {
     private val tag = javaClass.simpleName
@@ -53,7 +48,7 @@ class PushTestActivity : FragmentActivity() {
                     ) {
                         TextWithButton("Push Json File - 삽입") {
                             scope.launch {
-                                val pushList = parseJsonFile<PushEntity>(
+                                val pushList = JsonFileUtil.parseJsonFileToList<PushEntity>(
                                     this@PushTestActivity,
                                     "example.json",
                                     gson
@@ -66,11 +61,11 @@ class PushTestActivity : FragmentActivity() {
 
                         TextWithButton("Push Json String - 삽입") {
                             scope.launch {
-                                val jsonString = loadJsonFromAssets(
+                                val jsonString = JsonFileUtil.loadJsonFromAssets(
                                     this@PushTestActivity,
                                     "example.json",
                                 ) ?: ""
-                                val pushList = parseJsonString<PushEntity>(
+                                val pushList = JsonFileUtil.parseJsonStringToList<PushEntity>(
                                     jsonString,
                                     gson
                                 )
@@ -104,7 +99,7 @@ class PushTestActivity : FragmentActivity() {
 
                         TextWithButton("DeviceEvent Json File - 삽입") {
                             scope.launch {
-                                val pushList = parseJsonFile<PushFile>(
+                                val pushList = JsonFileUtil.parseJsonFileToList<PushFile>(
                                     this@PushTestActivity, "dummy_data.json"
                                 )
                                 Log.d(tag, "DeviceEvent parseJsonFile pushList = $pushList")
@@ -142,74 +137,5 @@ class PushTestActivity : FragmentActivity() {
         }
     }
 
-    private fun loadJsonFromAssets(context: Context, fileName: String): String? {
-        return try {
-            context.assets.open(fileName).bufferedReader().use { it.readText() }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
-    }
 
-    fun loadLargeJsonFromAssets(context: Context, fileName: String): String {
-        val stringBuilder = StringBuilder()
-        try {
-            context.assets.open(fileName).use { inputStream ->
-                BufferedReader(InputStreamReader(inputStream)).use { reader ->
-                    var line: String?
-                    while (reader.readLine().also { line = it } != null) {
-                        stringBuilder.append(line) // 한 줄씩 읽어서 추가
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return stringBuilder.toString()
-    }
-
-    private inline fun <reified T> parseJsonFile(
-        context: Context, fileName: String, gson: Gson = Gson()
-    ): List<T> {
-        return try {
-            val inputStream = context.assets.open(fileName)
-            val reader = JsonReader(InputStreamReader(inputStream, "UTF-8"))
-            jsonStringToClass(reader, gson)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
-
-    private inline fun <reified T> parseJsonString(
-        jsonString: String, gson: Gson = Gson()
-    ): List<T> {
-        return try {
-            val reader = JsonReader(StringReader(jsonString))
-            jsonStringToClass(reader, gson)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return emptyList()
-        }
-    }
-
-    private inline fun <reified T> jsonStringToClass(
-        reader: JsonReader, gson: Gson = Gson()
-    ): List<T> {
-        val dataList = mutableListOf<T>()
-        try {
-            reader.beginArray() // 🔹 JSON 배열 시작 `[` 인식
-
-            while (reader.hasNext()) {
-                val data: T = gson.fromJson(reader, T::class.java) // 🔹 Object 단위로 변환
-                dataList.add(data) // 🔹 리스트에 추가
-            }
-
-            reader.endArray() // 🔹 JSON 배열 끝 `]` 인식
-            reader.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return dataList
-    }
 }
