@@ -293,10 +293,10 @@ enum class SingleValueDataType {
 
     companion object {
         fun convertString(type: String): SingleValueDataType = when (type) {
-            SingleValueDataType.string.name -> SingleValueDataType.string
-            SingleValueDataType.int.name -> SingleValueDataType.int
-            SingleValueDataType.long.name -> SingleValueDataType.long
-            SingleValueDataType.timestamp.name -> SingleValueDataType.timestamp
+            string.name -> string
+            int.name -> int
+            long.name -> long
+            timestamp.name -> timestamp
             else -> throw NullPointerException()
         }
     }
