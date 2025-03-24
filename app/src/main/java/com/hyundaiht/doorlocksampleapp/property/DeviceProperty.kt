@@ -53,33 +53,6 @@ data class States(
  *  - RecordSet
  */
 sealed class Configuration {
-    data class OneOfArray(
-        val type: String,
-        val array: OneOfArrayType,
-    ) : Configuration()
-
-    data class MultiOfArray(
-        val type: String,
-        val limit: Int? = null,
-        val array: MultiOfArrayType,
-    ) : Configuration()
-
-    data class OneOfRange(
-        val type: String,
-        val range: OneOfRangeType,
-    ) : Configuration()
-
-    data class SingleValue(
-        val type: String,
-        val value: SingleValueType,
-    ) : Configuration()
-
-    data class RecordSet(
-        val type: String,
-        val limit: Int? = null,
-        val record: List<RecordSetType>,
-    ) : Configuration()
-
     /**
      * OneOfArrayType
      *
@@ -96,11 +69,12 @@ sealed class Configuration {
      * - Mandatory / Optional : M
      * - Description : 쓰기 속성값 배열, 빈 배열인 경우 읽기 전용 속성임을 의미
      */
-    data class OneOfArrayType(
+    data class OneOfArray(
+        val type: String,
         val dataType: String,
         val readable: List<String> = emptyList(),
         val writable: List<String> = emptyList(),
-    )
+    ) : Configuration()
 
     /**
      * MultiOfArrayType
@@ -118,11 +92,13 @@ sealed class Configuration {
      * - Mandatory / Optional : M
      * - Description : 쓰기 속성값 배열, 빈 배열인 경우 읽기 전용 속성임을 의미
      */
-    data class MultiOfArrayType(
+    data class MultiOfArray(
+        val type: String,
+        val limit: Int? = null,
         val dataType: String,
         val readable: List<String> = emptyList(),
         val writable: List<String> = emptyList(),
-    )
+    ) : Configuration()
 
     /**
      * OneOfRangeType
@@ -153,14 +129,15 @@ sealed class Configuration {
      * - Mandatory / Optional : M
      * - Description : true / false, false의 값을 가지는 경우 제어 불가함을 의미
      */
-    data class OneOfRangeType(
+    data class OneOfRange(
+        val type: String,
         val dataType: String,
         val min: Int,
         val max: Int,
         val step: Int,
         val unit: String?,
         val editable: Boolean,
-    )
+    ) : Configuration()
 
     /**
      * SingleValueType
@@ -187,63 +164,42 @@ sealed class Configuration {
      * - Mandatory / Optional : M
      * - Description : true / false, false의 값을 가지는 경우 변경(제어) 불가능함을 의미
      */
-    data class SingleValueType(
+    data class SingleValue(
+        val type: String,
         val dataType: String,
         val min: Int? = null,
         val max: Int? = null,
         val digitOnly: Boolean? = null,
         val editable: Boolean,
-    )
+    ) : Configuration()
 
     /**
-     * TODO
+     * RecordSet
+     *
+     * @property type
+     * @property limit
+     * @property record
+     */
+    data class RecordSet(
+        val type: String,
+        val limit: Int? = null,
+        val record: List<RecordSetType>,
+    ) : Configuration()
+
+    /**
+     * RecordSetType
      *
      * @property id
      * @property text
      * @property limit
-     * @property recordItemConfiguration
+     * @property configuration
      */
     data class RecordSetType(
         val id: String,
         val text: String,
         val limit: Int? = null,
-        val recordItemConfiguration: Record
+        val configuration: Configuration
     )
-
-    sealed class Record {
-        data class OneOfArray(
-            val type: String,
-            val dataType: String,
-            val readable: List<String> = emptyList(),
-            val writable: List<String> = emptyList(),
-        ) : Record()
-
-        data class MultiOfArray(
-            val type: String,
-            val dataType: String,
-            val readable: List<String> = emptyList(),
-            val writable: List<String> = emptyList()
-        ) : Record()
-
-        data class OneOfRange(
-            val type: String,
-            val dataType: String,
-            val min: Int,
-            val max: Int,
-            val step: Int,
-            val unit: String,
-            val editable: Boolean
-        ) : Record()
-
-        data class SingleValue(
-            val type: String,
-            val dataType: String,
-            val min: Int? = null,
-            val max: Int? = null,
-            val digitOnly: Boolean?,
-            val editable: Boolean
-        ) : Record()
-    }
 }
 
 data class Notification(
@@ -251,81 +207,3 @@ data class Notification(
     val argument: List<String>? = null,
     val lang: JsonObject?,
 )
-
-/**
- * TODO
- *
- * @return
- */
-fun Configuration.Record.MultiOfArray.toConfiguration(limit: Int?): Configuration.MultiOfArray? {
-    return kotlin.runCatching {
-        Configuration.MultiOfArray(
-            type = this@toConfiguration.type,
-            limit = limit,
-            array = Configuration.MultiOfArrayType(
-                dataType = this@toConfiguration.dataType,
-                readable = this@toConfiguration.readable,
-                writable = this@toConfiguration.writable,
-            )
-        )
-    }.getOrNull()
-}
-
-/**
- * TODO
- *
- * @return
- */
-fun Configuration.Record.SingleValue.toConfiguration(): Configuration.SingleValue? {
-    return kotlin.runCatching {
-        Configuration.SingleValue(
-            type = this@toConfiguration.type,
-            value = Configuration.SingleValueType(
-                dataType = this@toConfiguration.dataType,
-                min = this@toConfiguration.min,
-                max = this@toConfiguration.max,
-                digitOnly = this@toConfiguration.digitOnly,
-                editable = this@toConfiguration.editable,
-            )
-        )
-    }.getOrNull()
-}
-
-/**
- * TODO
- *
- * @return
- */
-fun Configuration.Record.OneOfRange.toConfiguration(): Configuration.OneOfRange? {
-    return kotlin.runCatching {
-        Configuration.OneOfRange(
-            type = this@toConfiguration.type,
-            range = Configuration.OneOfRangeType(
-                dataType = this@toConfiguration.dataType,
-                min = this@toConfiguration.min,
-                max = this@toConfiguration.max,
-                step = this@toConfiguration.step,
-                unit = this@toConfiguration.unit,
-                editable = this@toConfiguration.editable,
-            )
-        )
-    }.getOrNull()
-}
-
-/**
- * TODO
- *
- * @return
- */
-fun Configuration.Record.OneOfArray.toConfiguration(): Configuration.OneOfArray? {
-    return kotlin.runCatching {
-        Configuration.OneOfArray(
-            type = this@toConfiguration.type,
-            array = Configuration.OneOfArrayType(
-                dataType = this@toConfiguration.dataType,
-                writable = this@toConfiguration.writable,
-                readable = this@toConfiguration.readable,
-            )
-        )
-    }.getOrNull()
-}

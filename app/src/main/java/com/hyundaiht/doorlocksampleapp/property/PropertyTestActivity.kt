@@ -45,12 +45,6 @@ class PropertyTestActivity : FragmentActivity() {
             .registerSubtype(Configuration.OneOfRange::class.java, "oneOfRange")
             .registerSubtype(Configuration.SingleValue::class.java, "singleValue")
             .registerSubtype(Configuration.RecordSet::class.java, "recordSet")
-    ).registerTypeAdapterFactory(
-        RuntimeTypeAdapterFactory.of(Configuration.Record::class.java, "type")
-            .registerSubtype(Configuration.Record.OneOfArray::class.java, "oneOfArray")
-            .registerSubtype(Configuration.Record.OneOfRange::class.java, "oneOfRange")
-            .registerSubtype(Configuration.Record.MultiOfArray::class.java, "multiOfArray")
-            .registerSubtype(Configuration.Record.SingleValue::class.java, "singleValue")
     ).create()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,7 +163,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "dataType = ${configuration.value.dataType}"
+                    text = "dataType = ${configuration.dataType}"
                 )
 
                 Text(
@@ -177,7 +171,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "min = ${configuration.value.min}"
+                    text = "min = ${configuration.min}"
                 )
 
                 Text(
@@ -185,7 +179,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "max = ${configuration.value.max}"
+                    text = "max = ${configuration.max}"
                 )
 
                 Text(
@@ -193,7 +187,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "editable = ${configuration.value.editable}"
+                    text = "editable = ${configuration.editable}"
                 )
 
                 Text(
@@ -201,14 +195,14 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "digitOnly = ${configuration.value.digitOnly}"
+                    text = "digitOnly = ${configuration.digitOnly}"
                 )
             }
         } else {
-            val min = configuration.value.min ?: 0
-            val max = configuration.value.max ?: Int.MAX_VALUE
-            val dataType = SingleValueDataType.convertString(configuration.value.dataType)
-            val editable = configuration.value.editable
+            val min = configuration.min ?: 0
+            val max = configuration.max ?: Int.MAX_VALUE
+            val dataType = SingleValueDataType.convertString(configuration.dataType)
+            val editable = configuration.editable
 
             LimitedTypedTextField(
                 minLength = min, maxLength = max, dataType, editable
@@ -242,7 +236,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "dataType = ${configuration.range.dataType}"
+                    text = "dataType = ${configuration.dataType}"
                 )
 
                 Text(
@@ -250,7 +244,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "min = ${configuration.range.min}"
+                    text = "min = ${configuration.min}"
                 )
 
                 Text(
@@ -258,7 +252,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "max = ${configuration.range.max}"
+                    text = "max = ${configuration.max}"
                 )
 
                 Text(
@@ -266,7 +260,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "step = ${configuration.range.step}"
+                    text = "step = ${configuration.step}"
                 )
 
                 Text(
@@ -274,7 +268,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "unit = ${configuration.range.unit}"
+                    text = "unit = ${configuration.unit}"
 
                 )
 
@@ -283,15 +277,15 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "editable = ${configuration.range.editable}"
+                    text = "editable = ${configuration.editable}"
                 )
             }
         } else {
-            val min = configuration.range.min.toFloat()
-            val max = configuration.range.max.toFloat()
-            val step = configuration.range.step.toFloat()
-            val unit = configuration.range.unit ?: ""
-            val isEnable = configuration.range.editable
+            val min = configuration.min.toFloat()
+            val max = configuration.max.toFloat()
+            val step = configuration.step.toFloat()
+            val unit = configuration.unit ?: ""
+            val isEnable = configuration.editable
 
             val steps = getUiSteps(min, max, step)
             if (steps > 50) {
@@ -330,7 +324,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "dataType = ${configuration.array.dataType}"
+                    text = "dataType = ${configuration.dataType}"
                 )
 
                 Text(
@@ -338,7 +332,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "readable = ${configuration.array.readable}"
+                    text = "readable = ${configuration.readable}"
                 )
 
                 Text(
@@ -346,7 +340,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "writable = ${configuration.array.writable}"
+                    text = "writable = ${configuration.writable}"
                 )
             }
         } else {
@@ -358,23 +352,23 @@ class PropertyTestActivity : FragmentActivity() {
                 }
             }
             when {
-                configuration.array.writable.isNotEmpty() -> if (uiType) {
+                configuration.writable.isNotEmpty() -> if (uiType) {
                     ExposedDropdownMenus(
-                        configuration.array.writable, true
+                        configuration.writable, true
                     )
                 } else {
                     ChipFlowRow(
-                        configuration.array.writable, 1, true
+                        configuration.writable, 1, true
                     )
                 }
 
-                configuration.array.readable.isNotEmpty() -> if (uiType) {
+                configuration.readable.isNotEmpty() -> if (uiType) {
                     ExposedDropdownMenus(
-                        configuration.array.readable, false
+                        configuration.readable, false
                     )
                 } else {
                     ChipFlowRow(
-                        configuration.array.readable, 1, false
+                        configuration.readable, 1, false
                     )
                 }
             }
@@ -405,7 +399,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "dataType = ${configuration.array.dataType}"
+                    text = "dataType = ${configuration.dataType}"
                 )
 
                 Text(
@@ -413,7 +407,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "readable = ${configuration.array.readable}"
+                    text = "readable = ${configuration.readable}"
                 )
 
                 Text(
@@ -421,7 +415,7 @@ class PropertyTestActivity : FragmentActivity() {
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(Color.Yellow),
-                    text = "writable = ${configuration.array.writable}"
+                    text = "writable = ${configuration.writable}"
                 )
             }
         } else {
@@ -435,23 +429,23 @@ class PropertyTestActivity : FragmentActivity() {
 
             val limit = configuration.limit ?: throw NullPointerException()
             when {
-                configuration.array.writable.isNotEmpty() -> if (uiType) {
+                configuration.writable.isNotEmpty() -> if (uiType) {
                     BasicCheckBoxes(
-                        configuration.array.writable, limit, true
+                        configuration.writable, limit, true
                     )
                 } else {
                     ChipFlowRow(
-                        configuration.array.writable, limit, true
+                        configuration.writable, limit, true
                     )
                 }
 
-                configuration.array.readable.isNotEmpty() -> if (uiType) {
+                configuration.readable.isNotEmpty() -> if (uiType) {
                     BasicCheckBoxes(
-                        configuration.array.writable, limit, true
+                        configuration.writable, limit, true
                     )
                 } else {
                     ChipFlowRow(
-                        configuration.array.writable, limit, true
+                        configuration.writable, limit, true
                     )
                 }
             }
@@ -496,7 +490,7 @@ class PropertyTestActivity : FragmentActivity() {
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .background(Color.Yellow),
-                        text = "recordItemConfiguration = ${record.recordItemConfiguration}"
+                        text = "recordItemConfiguration = ${record.configuration}"
                     )
 
                     HorizontalDivider(thickness = 10.dp, color = Color.Gray)
@@ -509,33 +503,26 @@ class PropertyTestActivity : FragmentActivity() {
                     .wrapContentHeight()
             ) {
                 configuration.record.forEach { record ->
-                    val limit = record.limit
                     HorizontalDivider(thickness = 2.dp, color = Color.Black)
                     Text("id = ${record.id}, text = ${record.text}")
-                    when (val recordItemConfiguration = record.recordItemConfiguration) {
-                        is Configuration.Record.MultiOfArray -> {
-                            val toConfiguration =
-                                recordItemConfiguration.toConfiguration(limit) ?: return@forEach
-                            PropertyState_MultiOfArray(toConfiguration, isText)
+                    when (val recordItemConfiguration = record.configuration) {
+                        is Configuration.MultiOfArray -> {
+                            PropertyState_MultiOfArray(recordItemConfiguration, isText)
                         }
 
-                        is Configuration.Record.OneOfArray -> {
-                            val toConfiguration =
-                                recordItemConfiguration.toConfiguration() ?: return@forEach
-                            PropertyState_OneOfArray(toConfiguration, isText)
+                        is Configuration.OneOfArray -> {
+                            PropertyState_OneOfArray(recordItemConfiguration, isText)
                         }
 
-                        is Configuration.Record.OneOfRange -> {
-                            val toConfiguration =
-                                recordItemConfiguration.toConfiguration() ?: return@forEach
-                            PropertyState_OneOfRange(toConfiguration, isText)
+                        is Configuration.OneOfRange -> {
+                            PropertyState_OneOfRange(recordItemConfiguration, isText)
                         }
 
-                        is Configuration.Record.SingleValue -> {
-                            val toConfiguration =
-                                recordItemConfiguration.toConfiguration() ?: return@forEach
-                            PropertyState_SingleValue(toConfiguration, isText)
+                        is Configuration.SingleValue -> {
+                            PropertyState_SingleValue(recordItemConfiguration, isText)
                         }
+
+                        else -> {}
                     }
                 }
             }
