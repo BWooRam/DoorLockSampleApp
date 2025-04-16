@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Cleartext traffic (HTTP) 허용 설정 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">15.164.79.125</domain> <!-- WebSocket 서버 도메인 -->
+    </domain-config>
+</network-security-config>

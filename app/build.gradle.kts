@@ -82,4 +82,10 @@ dependencies {
 
     //Gson
     implementation(libs.gson)
+
+    //Retrofit
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlin.serialization)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp.logging)
 }
