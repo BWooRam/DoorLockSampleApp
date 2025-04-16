@@ -1,6 +1,5 @@
 package com.hyundaiht.doorlocksampleapp.websocket
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -11,12 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
-import com.google.gson.Gson
 import com.hyundaiht.doorlocksampleapp.AppApplication
 import com.hyundaiht.doorlocksampleapp.TextWithButton
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import okhttp3.Response
 import okhttp3.WebSocket
 import okio.ByteString
@@ -37,11 +33,11 @@ class WebSocketTestApplicationActivity : FragmentActivity() {
                             .padding(innerPadding)
                     ) {
                         TextWithButton("Application WebSocket - addListener() 실행") {
-                            initBinderListener()
+                            openWebSocket()
                         }
 
                         TextWithButton("Application WebSocket - removeListener() 실행") {
-                            removeBinderListener()
+                            closeWebSocket()
                         }
 
                     }
@@ -53,20 +49,16 @@ class WebSocketTestApplicationActivity : FragmentActivity() {
     override fun onStart() {
         super.onStart()
         Log.d(tag, "onStart start")
-        initBinderListener()
+        openWebSocket()
     }
 
     override fun onStop() {
         super.onStop()
         Log.d(tag, "onStop start")
-        removeBinderListener()
+        closeWebSocket()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    private fun initBinderListener() {
+    private fun openWebSocket() {
         val app = application as? AppApplication
             ?: throw NullPointerException("AppApplication is null")
 
@@ -115,7 +107,7 @@ class WebSocketTestApplicationActivity : FragmentActivity() {
         })
     }
 
-    private fun removeBinderListener() {
+    private fun closeWebSocket() {
         val app = application as? AppApplication
             ?: throw NullPointerException("AppApplication is null")
 
