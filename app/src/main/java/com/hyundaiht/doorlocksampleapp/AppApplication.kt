@@ -1,17 +1,7 @@
 package com.hyundaiht.doorlocksampleapp
 
 import android.app.Application
-import android.content.ComponentName
-import android.content.ServiceConnection
-import android.os.IBinder
-import android.util.Log
-import com.hyundaiht.doorlocksampleapp.api.ApiModule
-import com.hyundaiht.doorlocksampleapp.websocket.AppSocketClient
-import com.hyundaiht.doorlocksampleapp.websocket.WebSocketListener
 import com.hyundaiht.doorlocksampleapp.websocket.WebSocketService
-import okhttp3.Response
-import okhttp3.WebSocket
-import okio.ByteString
 
 class AppApplication : Application(){
     private val tag = javaClass.simpleName

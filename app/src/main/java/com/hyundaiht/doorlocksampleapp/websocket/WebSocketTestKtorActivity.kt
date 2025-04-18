@@ -12,12 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.fragment.app.FragmentActivity
 import com.hyundaiht.doorlocksampleapp.AppApplication
 import com.hyundaiht.doorlocksampleapp.TextWithButton
+import com.hyundaiht.doorlocksampleapp.api.ApiModule
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.Response
 import okhttp3.WebSocket
 import okio.ByteString
 
-class WebSocketTestApplicationActivity : FragmentActivity() {
+class WebSocketTestKtorActivity : FragmentActivity() {
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private val socketClientKtor = AppSocketClientKtor(ApiModule.TEST_APP_ID)
     private val tag = javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,56 +65,15 @@ class WebSocketTestApplicationActivity : FragmentActivity() {
     }
 
     private fun openWebSocket() {
-        val app = application as? AppApplication
-            ?: throw NullPointerException("AppApplication is null")
-
-        app.binder.openWebSocket()
-        app.binder.addListener(hashCode(), object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.d(tag, "WebSocket open")
-            }
-
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d(tag, "Receiving : $text")
-            }
-
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                Log.d(tag, "Receiving : $bytes")
-            }
-
-            override fun onClosing(
-                webSocket: WebSocket,
-                code: Int,
-                reason: String
-            ) {
-                Log.d(tag, "Closing : $code / $reason")
-            }
-
-            override fun onClosed(
-                webSocket: WebSocket,
-                code: Int,
-                reason: String
-            ) {
-                Log.d(tag, "onClosed : $code / $reason")
-            }
-
-            override fun onFailure(
-                webSocket: WebSocket,
-                t: Throwable,
-                response: Response?
-            ) {
-                super.onFailure(webSocket, t, response)
-                Log.d(tag, "onFailure : " + t.message)
-            }
-        })
+        scope.launch {
+            socketClientKtor.openWebSocket()
+        }
     }
 
     private fun closeWebSocket() {
-        val app = application as? AppApplication
-            ?: throw NullPointerException("AppApplication is null")
-
-        app.binder.removeListener(hashCode())
-        app.binder.closeWebSocket()
+        scope.launch {
+            socketClientKtor.closeWebSocket()
+        }
     }
 
 }

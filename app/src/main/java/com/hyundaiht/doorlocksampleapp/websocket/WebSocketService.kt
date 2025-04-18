@@ -19,7 +19,7 @@ class WebSocketService : Service() {
     class LocalBinder(
         private val tag: String
     ) : Binder(), WebSocketBinder {
-        private val appWebSocketClient = AppSocketClient(ApiModule.TEST_APP_ID)
+        private val appWebSocketClient = AppSocketClientOkHttp(ApiModule.TEST_APP_ID)
         private val ioScope = CoroutineScope(Dispatchers.IO)
 
         override fun addListener(id: Int, listener: WebSocketListener) {

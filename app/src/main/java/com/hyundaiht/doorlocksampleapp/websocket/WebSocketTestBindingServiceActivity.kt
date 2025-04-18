@@ -56,17 +56,14 @@ class WebSocketTestBindingServiceActivity : FragmentActivity() {
             localBinder = service as? WebSocketService.LocalBinder
             localBinder?.addListener(hashCode(), object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
-                    super.onOpen(webSocket, response)
                     Log.d(tag, "WebSocket open")
                 }
 
                 override fun onMessage(webSocket: WebSocket, text: String) {
-                    super.onMessage(webSocket, text)
                     Log.d(tag, "Receiving : $text")
                 }
 
                 override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                    super.onMessage(webSocket, bytes)
                     Log.d(tag, "Receiving : $bytes")
                 }
 
@@ -75,12 +72,10 @@ class WebSocketTestBindingServiceActivity : FragmentActivity() {
                 }
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                    super.onClosed(webSocket, code, reason)
                     Log.d(tag, "onClosed : $code / $reason")
                 }
 
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                    super.onFailure(webSocket, t, response)
                     Log.d(tag, "onFailure : " + t.message)
                 }
             })

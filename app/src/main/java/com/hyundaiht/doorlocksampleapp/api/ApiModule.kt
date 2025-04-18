@@ -13,7 +13,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object ApiModule {
-    const val ACCESS_TOKEN = "AJfCPc5lUxP5TutOXh86y"
+    const val ACCESS_TOKEN = "AIGLHgGZdEnoiMMVmFQFN"
     const val HT_IOT_APE_URL1 = "https://177b5a76-7318-4776-b141-2cf2ac75af76.mock.pstmn.io"
     const val HT_IOT_APE_URL2 = "https://15.165.166.181:9080"
     const val USER_LOGIN_URL = "https://hthome-auth-develop.htiotservice.com"

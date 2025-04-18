@@ -1,7 +1,10 @@
 package com.hyundaiht.doorlocksampleapp
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,11 +20,13 @@ import com.hyundaiht.doorlocksampleapp.push.PushTestActivity
 import com.hyundaiht.doorlocksampleapp.websocket.WebSocketTestBindingServiceActivity
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
 import com.hyundaiht.doorlocksampleapp.websocket.WebSocketTestApplicationActivity
+import com.hyundaiht.doorlocksampleapp.websocket.WebSocketTestKtorActivity
 import com.hyundaiht.doorlocksampleapp.websocket.WebSocketTestViewModelActivity
 
 class MainActivity : ComponentActivity() {
     private val tag = javaClass.simpleName
 
+    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -90,6 +95,15 @@ class MainActivity : ComponentActivity() {
                                 Intent(
                                     this@MainActivity,
                                     WebSocketTestBindingServiceActivity::class.java
+                                )
+                            )
+                        }
+
+                        TextWithButton("Ktor Sample 테스트 이동") {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    WebSocketTestKtorActivity::class.java
                                 )
                             )
                         }
