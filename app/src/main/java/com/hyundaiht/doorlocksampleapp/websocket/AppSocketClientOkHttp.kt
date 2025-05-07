@@ -21,8 +21,14 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okio.ByteString
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
 import java.util.Scanner
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 interface WebSocketClient {
     val listenerHashMap: MutableMap<Int, WebSocketListener>
@@ -41,8 +47,48 @@ class AppSocketClientOkHttp(
 ) : WebSocketClient {
     override val listenerHashMap: MutableMap<Int, WebSocketListener> = mutableMapOf()
     private val tag = javaClass.simpleName
-    private val client =
-        OkHttpClient.Builder().addNetworkInterceptor(providesLoggingInterceptor()).build()
+
+    //    private val client = OkHttpClient.Builder().addNetworkInterceptor(providesLoggingInterceptor()).build()
+    private val client = getUnsafeOkHttpClient()
+
+    fun getUnsafeOkHttpClient(): OkHttpClient {
+        // 모든 인증서를 신뢰하는 TrustManager
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(
+                chain: Array<out X509Certificate>?,
+                authType: String?
+            ) {
+                Log.d(tag, "getUnsafeOkHttpClient checkClientTrusted authType = $authType, chain = $chain")
+            }
+
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                Log.d(tag, "getUnsafeOkHttpClient checkServerTrusted authType = $authType, chain = $chain")
+                try {
+                    // Perform server certificate chain validation
+                    for (certificate in chain.orEmpty()) {
+                        certificate.checkValidity()
+                        Log.d(tag, "chain certificate = $certificate")
+                    }
+                } catch (e: CertificateException) {
+                    Log.d(tag, "chain error = $e")
+                    throw CertificateException("SSL certificate validation error: ${e.message}")
+                }
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+        })
+
+        val sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null, trustAllCerts, SecureRandom())
+
+        val sslSocketFactory = sslContext.socketFactory
+
+        return OkHttpClient.Builder()
+            .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
+            .hostnameVerifier { _, _ -> true } // 호스트 이름 무시
+            .addNetworkInterceptor(providesLoggingInterceptor())
+            .build()
+    }
 
     private val request = Request.Builder()
         .url("wss://$DCH_IP/devices/${deviceID}?accessToken=${ApiModule.ACCESS_TOKEN}")

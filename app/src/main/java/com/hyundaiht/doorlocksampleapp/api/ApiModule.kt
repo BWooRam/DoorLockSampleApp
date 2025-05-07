@@ -1,11 +1,13 @@
 package com.hyundaiht.doorlocksampleapp.api
 
 import android.annotation.SuppressLint
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.security.SecureRandom
+import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
@@ -13,6 +15,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object ApiModule {
+    private val tag = javaClass.simpleName
     const val ACCESS_TOKEN = "A6AbGpjBc5XwrKU3icMG5"
     const val HT_IOT_APE_URL1 = "https://177b5a76-7318-4776-b141-2cf2ac75af76.mock.pstmn.io"
     const val HT_IOT_APE_URL2 = "https://htiot-dev-api-frontend.htiotservice.com"
@@ -21,8 +24,8 @@ object ApiModule {
 
     val client = OkHttpClient.Builder().addInterceptor(AuthInterceptor(ACCESS_TOKEN))
         .addNetworkInterceptor(providesLoggingInterceptor())
-//        .sslSocketFactory(createUnsafeSslSocketFactory(), createUnsafeTrustManager())
-//        .hostnameVerifier { _, _ -> true }  // 모든 호스트명 확인을 무시
+        .sslSocketFactory(createUnsafeSslSocketFactory(), createUnsafeTrustManager())
+        .hostnameVerifier { _, _ -> true }  // 모든 호스트명 확인을 무시
         .build()
 
     fun providesLoggingInterceptor(): HttpLoggingInterceptor =
@@ -46,10 +49,22 @@ object ApiModule {
 
             @SuppressLint("TrustAllX509TrustManager")
             override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+                Log.d(tag, "createUnsafeSslSocketFactory checkClientTrusted authType = $authType, chain = $chain")
             }
 
             @SuppressLint("TrustAllX509TrustManager")
             override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+                Log.d(tag, "createUnsafeSslSocketFactory checkServerTrusted authType = $authType, chain = $chain")
+                try {
+                    // Perform server certificate chain validation
+                    for (certificate in chain.orEmpty()) {
+                        certificate.checkValidity()
+                        Log.d(tag, "createUnsafeSslSocketFactory chain certificate = $certificate")
+                    }
+                } catch (e: CertificateException) {
+                    Log.d(tag, "createUnsafeSslSocketFactory chain error = $e")
+                    throw CertificateException("SSL certificate validation error: ${e.message}")
+                }
             }
         }
 
@@ -64,10 +79,22 @@ object ApiModule {
         return object : X509TrustManager {
             @SuppressLint("TrustAllX509TrustManager")
             override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {
+                Log.d(tag, "createUnsafeTrustManager checkClientTrusted authType = $authType, chain = $chain")
             }
 
             @SuppressLint("TrustAllX509TrustManager")
             override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
+                Log.d(tag, "createUnsafeTrustManager checkServerTrusted authType = $authType, chain = $chain")
+                try {
+                    // Perform server certificate chain validation
+                    for (certificate in chain.orEmpty()) {
+                        certificate.checkValidity()
+                        Log.d(tag, "createUnsafeTrustManager chain certificate = $certificate")
+                    }
+                } catch (e: CertificateException) {
+                    Log.d(tag, "createUnsafeTrustManager chain error = $e")
+                    throw CertificateException("SSL certificate validation error: ${e.message}")
+                }
             }
 
             override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
