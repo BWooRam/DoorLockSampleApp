@@ -34,6 +34,7 @@ interface WebSocketClient {
     suspend fun sendData(text: String): Boolean
 }
 
+const val DCH_IP = "htiot-dev-device-c-holder.htiotservice.com:443"
 
 class AppSocketClientOkHttp(
     private val deviceID: String
@@ -44,7 +45,7 @@ class AppSocketClientOkHttp(
         OkHttpClient.Builder().addNetworkInterceptor(providesLoggingInterceptor()).build()
 
     private val request = Request.Builder()
-        .url("ws://15.164.79.125:9081/devices/${deviceID}?accessToken=${ApiModule.ACCESS_TOKEN}")
+        .url("wss://$DCH_IP/devices/${deviceID}?accessToken=${ApiModule.ACCESS_TOKEN}")
         .build()
 
     private val listener: WebSocketListener = object : WebSocketListener() {

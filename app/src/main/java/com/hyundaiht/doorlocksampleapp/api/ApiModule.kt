@@ -13,16 +13,16 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object ApiModule {
-    const val ACCESS_TOKEN = "AIGLHgGZdEnoiMMVmFQFN"
+    const val ACCESS_TOKEN = "A6AbGpjBc5XwrKU3icMG5"
     const val HT_IOT_APE_URL1 = "https://177b5a76-7318-4776-b141-2cf2ac75af76.mock.pstmn.io"
-    const val HT_IOT_APE_URL2 = "https://15.165.166.181:9080"
+    const val HT_IOT_APE_URL2 = "https://htiot-dev-api-frontend.htiotservice.com"
     const val USER_LOGIN_URL = "https://hthome-auth-develop.htiotservice.com"
     const val TEST_APP_ID = "11f015a6f7186232abb99901c0905b2c"
 
     val client = OkHttpClient.Builder().addInterceptor(AuthInterceptor(ACCESS_TOKEN))
         .addNetworkInterceptor(providesLoggingInterceptor())
-        .sslSocketFactory(createUnsafeSslSocketFactory(), createUnsafeTrustManager())
-        .hostnameVerifier { _, _ -> true }  // 모든 호스트명 확인을 무시
+//        .sslSocketFactory(createUnsafeSslSocketFactory(), createUnsafeTrustManager())
+//        .hostnameVerifier { _, _ -> true }  // 모든 호스트명 확인을 무시
         .build()
 
     fun providesLoggingInterceptor(): HttpLoggingInterceptor =

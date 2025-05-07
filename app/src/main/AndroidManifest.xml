@@ -36,6 +36,11 @@
             android:theme="@style/Theme.DoorLockSampleApp" />
 
         <activity
+            android:name=".api.ApiSampleActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DoorLockSampleApp" />
+
+        <activity
             android:name=".websocket.WebSocketTestKtorActivity"
             android:exported="false"
             android:theme="@style/Theme.DoorLockSampleApp" />

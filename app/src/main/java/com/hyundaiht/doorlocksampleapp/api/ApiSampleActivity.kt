@@ -1,4 +1,4 @@
-package com.hyundaiht.doorlocksampleapp.websocket
+package com.hyundaiht.doorlocksampleapp.api
 
 import android.content.ComponentName
 import android.content.ServiceConnection
@@ -37,6 +37,8 @@ import com.hyundaiht.doorlocksampleapp.property.DevicePropertyResponse
 import com.hyundaiht.doorlocksampleapp.property.DeviceResponse
 import com.hyundaiht.doorlocksampleapp.property.PropertyState
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
+import com.hyundaiht.doorlocksampleapp.websocket.WebSocketListener
+import com.hyundaiht.doorlocksampleapp.websocket.WebSocketService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,8 +46,21 @@ import okhttp3.Response
 import okhttp3.WebSocket
 import okio.ByteString
 
-class WebSocketTestBindingServiceActivity : FragmentActivity() {
+class ApiSampleActivity : FragmentActivity() {
     private val tag = javaClass.simpleName
+    private val gson = GsonBuilder().registerTypeAdapterFactory(
+        RuntimeTypeAdapterFactory.of(Configuration::class.java, "type")
+            .registerSubtype(Configuration.MultiOfArray::class.java, "multiOfArray")
+            .registerSubtype(Configuration.OneOfArray::class.java, "oneOfArray")
+            .registerSubtype(Configuration.OneOfRange::class.java, "oneOfRange")
+            .registerSubtype(Configuration.SingleValue::class.java, "singleValue")
+            .registerSubtype(Configuration.RecordSet::class.java, "recordSet")
+    ).create()
+    private val ioScope = CoroutineScope(Dispatchers.IO)
+    private val htHomeAfeApi = ApiModule.provideHtHomeAfeApi()
+    private val isText = mutableStateOf(false)
+    private val devicePropertyResponse = mutableStateOf<DeviceDetails?>(null)
+    private val deviceResponse = mutableStateOf<DeviceResponse?>(null)
     private var localBinder: WebSocketService.LocalBinder? = null
 
     private val connection = object : ServiceConnection {
@@ -99,28 +114,92 @@ class WebSocketTestBindingServiceActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(tag, "onCreate")
-        WebSocketService.binding(this@WebSocketTestBindingServiceActivity, connection)
+        WebSocketService.Companion.binding(this@ApiSampleActivity, connection)
 //        startService(Intent(this@SampleActivity, WebSocketService::class.java))
         enableEdgeToEdge()
         setContent {
             DoorLockSampleAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    var rememberStates by remember { devicePropertyResponse }
+
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(innerPadding)
                     ) {
+                        TextWithButton("뒤로가기") {
+                            rememberStates = null
+                        }
 
+                        if (rememberStates != null) {
+                            val property = rememberStates?.properties ?: throw NullPointerException(
+                                "property is NULL"
+                            )
+                            LazyColumn {
+                                items(property.states.size){
+                                    val target = property.states[it]
+                                    PropertyState(target, isText)
+                                }
+                            }
+                        } else DeviceList()
                     }
                 }
             }
         }
     }
 
+    @Composable
+    fun DeviceList() {
+        var rememberDeviceList by remember { deviceResponse }
+
+        TextWithButton("DeviceList 가져오기") {
+            ioScope.launch {
+                val result = htHomeAfeApi.getDeviceList()
+                Log.d(tag, "DeviceList result = $result")
+                rememberDeviceList = result.body()
+            }
+        }
+        LazyColumn {
+            items(rememberDeviceList?.resultData?.size ?: 0) { item ->
+                val device = rememberDeviceList?.resultData?.get(item) ?: return@items
+                DeviceItem(device)
+            }
+        }
+    }
+
+    @Composable
+    fun DeviceItem(device: Device) {
+        val deviceTitle = device.deviceId
+        val deviceContent = "${device.deviceNickname ?: "Unknown"}\n${device.deviceType}"
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .clickable {
+                ioScope.launch {
+                    val result = htHomeAfeApi.getDeviceProperty(device.deviceId).body() ?: return@launch
+                    Log.d(tag, "DeviceList result = $result")
+                    devicePropertyResponse.value = gson.fromJson(result.resultData, DeviceDetails::class.java)
+                    Log.d(tag, "DeviceList devicePropertyResponse = $devicePropertyResponse")
+                }
+            }) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(), text = deviceTitle
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(), text = deviceContent
+            )
+            HorizontalDivider(thickness = 1.dp, color = Color.DarkGray)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d(tag, "onDestroy")
-        WebSocketService.unBinding(this@WebSocketTestBindingServiceActivity, connection)
+        WebSocketService.Companion.unBinding(this@ApiSampleActivity, connection)
     }
 
 }

@@ -1,38 +1,25 @@
 package com.hyundaiht.doorlocksampleapp.api
 
-import android.content.ComponentName
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.google.gson.Gson
 import com.hyundaiht.doorlocksampleapp.TextWithButton
-import com.hyundaiht.doorlocksampleapp.websocket.WebSocketService
 import com.hyundaiht.doorlocksampleapp.ui.theme.DoorLockSampleAppTheme
-import com.hyundaiht.doorlocksampleapp.websocket.WebSocketListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import okhttp3.WebSocket
-import okio.ByteString
 
 class ApiTestActivity : FragmentActivity() {
     private val tag = javaClass.simpleName

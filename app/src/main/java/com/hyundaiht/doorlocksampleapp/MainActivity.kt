@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import com.hyundaiht.doorlocksampleapp.api.ApiSampleActivity
 import com.hyundaiht.doorlocksampleapp.api.ApiTestActivity
 import com.hyundaiht.doorlocksampleapp.biometrics.BiometricsTestActivity
 import com.hyundaiht.doorlocksampleapp.property.PropertyUiTestActivity
@@ -68,6 +69,15 @@ class MainActivity : ComponentActivity() {
                                 Intent(
                                     this@MainActivity,
                                     ApiTestActivity::class.java
+                                )
+                            )
+                        }
+
+                        TextWithButton("API 샘플 이동") {
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    ApiSampleActivity::class.java
                                 )
                             )
                         }
